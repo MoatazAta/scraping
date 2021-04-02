@@ -3,11 +3,11 @@ import tkinter as tk
 from selenium import webdriver
 
 """ ================================---  [ GUI ] ---================================  """
-r = tk.Tk()
-r.title('Counting Seconds')
-button = tk.Button(r, text='Stop', width=25, height=25, command=r.destroy)
-button.pack()
-r.mainloop()
+# r = tk.Tk()
+# r.title('Counting Seconds')
+# button = tk.Button(r, text='Stop', width=25, height=25, command=r.destroy)
+# button.pack()
+# r.mainloop()
 
 """ ================================---  Write to MONGODB ---================================  """
 

@@ -37,62 +37,6 @@ def addRow(dict):
     x = mycolumn.insert_one(dict.copy())
 
 
-def readData():
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["tweets"]
-    mycol = mydb["yair_ntenyaho"]
-
-    myquery = {"date": "2021-04-01"}
-
-    mydoc = mycol.find(myquery)
-
-    for x in mydoc:
-        print(x)
-
-
-def writeToDataBase():
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")  # localhost:27017
-
-    mydb = myclient["mydatabase"]
-
-    print(myclient.list_database_names())
-    dblist = myclient.list_database_names()
-    if "mydatabase" in dblist:  # check if "mydatabase" table exist in mongodb
-        print("The database exists.")
-    mycolumn = mydb["customers"]  # add new column "customers" to  "mydatabase" table
-    print(mydb.list_collection_names())
-    collist = mydb.list_collection_names()
-    if "customers" in collist:
-        print("The collection exists.")
-    mydict = {"name": "AAA", "address": "BBBB"}  # the data that we would add it to "customers".
-    x = mycolumn.insert_one(mydict)  # add to mongodb
-
-
-# def download_facebook_post(page):
-#     driver = webdriver.Chrome()
-#     driver.get('https://www.facebook.com/' + page + '/')
-#     for scroll in range(5):
-#         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-#     time.sleep(2)
-#     posts = driver.find_elements_by_class_name("userContentWrapper")
-#     result = []
-#     for post in posts:
-#         row = {}
-#     row.update({"scrap_type": "facebook"})
-#     row.update({"page": page})
-#     time_element = post.find_element_by_css_selector("abbr")
-#     utime = time_element.get_attribute("data-utime")
-#     row.update({"utime": utime})
-#     text = ""
-#     text_elements = post.find_elements_by_css_selector("p")
-#     for elm in text_elements:
-#         text += elm.text
-#     row.update({"post": text})
-#     result.append(row)
-#     driver.close()
-#     return result
-
-
 def process_csv(csv_path):
     data_dict = {}
     df = pd.read_csv(csv_path)
@@ -106,6 +50,22 @@ def process_csv(csv_path):
         index = 0
 
 
+""" ------------------------------- Read From MONGODB -------------------------------------- """
+
+
+def readData():
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient["tweets"]
+    mycol = mydb["yair_ntenyaho"]
+
+    myquery = {"date": "2021-04-01"}
+
+    mydoc = mycol.find(myquery)
+
+    for x in mydoc:
+        print(x)
+
+
 """ =====================================---[ Main ]---================================ """
 # process_csv("YairNetanyahu.csv")
-readData()
+# readData()
