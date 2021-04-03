@@ -1,5 +1,7 @@
 import time
-import tkinter as tk
+
+# from main import addRow
+import pymongo
 from selenium import webdriver
 
 """ ================================---  [ GUI ] ---================================  """
@@ -10,6 +12,22 @@ from selenium import webdriver
 # r.mainloop()
 
 """ ================================---  Write to MONGODB ---================================  """
+
+
+def addRow(dict, database, column):
+    # connect to mongoDB(database)
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")  # localhost:27017
+
+    mydb = myclient[database]
+
+    mycolumn = mydb[column]  # add new column "customers" to  "mydatabase" table
+
+    x = mycolumn.insert_one(dict.copy())
+
+
+def addPostsToMongoDB(list, database, column):
+    for element in list:
+        addRow(element, database, column)
 
 
 def download_facebook_post(page):
@@ -34,9 +52,13 @@ def download_facebook_post(page):
         row.update({"post": text})
         result.append(row)
     driver.close()
+
     return result
+
+
+""" ------------------------------- Read From MONGODB -------------------------------------- """
 
 
 """ ================================--- [ Main ]---================================ """
 # res = download_facebook_post("ChampionsLeague")
-# print(len(res))
+# addPostsToMongoDB(res,"posts","UEFA")
