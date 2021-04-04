@@ -1,15 +1,6 @@
 import time
-
-# from main import addRow
 import pymongo
 from selenium import webdriver
-
-""" ================================---  [ GUI ] ---================================  """
-# r = tk.Tk()
-# r.title('Counting Seconds')
-# button = tk.Button(r, text='Stop', width=25, height=25, command=r.destroy)
-# button.pack()
-# r.mainloop()
 
 """ ================================---  Write to MONGODB ---================================  """
 
@@ -59,6 +50,19 @@ def download_facebook_post(page):
 """ ------------------------------- Read From MONGODB -------------------------------------- """
 
 
+def readData(database, column, myquery):
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient[database]
+    mycol = mydb[column]
+
+    mydoc = mycol.find(myquery)
+    return mydoc
+
+
 """ ================================--- [ Main ]---================================ """
 # res = download_facebook_post("ChampionsLeague")
 # addPostsToMongoDB(res,"posts","UEFA")
+myquery = {"post": { "$regex": "^S" } }
+mydoc = readData("posts", "UEFA", myquery)
+for x in mydoc:
+    print(x)
