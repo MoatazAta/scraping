@@ -6,10 +6,40 @@ import pymongo
 
 import twint
 
-""" ================================---  Write to MONGODB ---================================  """
+""" ================================--- Read and Write data from mongoDB ---================================  """
+
+""" -------- read posts|tweets from mongoDB -------- """
 
 
-# ------------tweets-------------#
+def readFromDB(database, column, myquery):
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient[database]
+    mycol = mydb[column]
+
+    mydoc = mycol.find(myquery)
+
+    return mydoc
+
+
+""" -------- write posts|tweets to mongoDB -------- """
+
+
+def writeToDB(dict, database, column):
+    # connect to mongoDB(database)
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")  # localhost:27017
+
+    mydb = myclient[database]
+
+    mycolumn = mydb[column]  # add new column "customers" to  "mydatabase" table
+
+    x = mycolumn.insert_one(dict.copy())
+
+
+""" ================================--- Tweets ( twint ) ---================================  """
+
+""" -------- Download Tweets ( twint ) -------- """
+
+
 def download_tweets_twint(username):
     # https://github.com/twintproject/twint/wiki
     a = twint.Config()
@@ -26,10 +56,10 @@ def download_tweets_twint(username):
     x = twint.run.Search(a)
 
 
-""" ------------------------------- Write to MONGODB -------------------------------------- """
+""" -------- Insert tweets to database -------- """
 
 
-def process_csv(csv_path, database, column):
+def insert_Tweets(csv_path, database, column):
     data_dict = {}
     df = pd.read_csv(csv_path)
     columns = df.columns
@@ -38,40 +68,13 @@ def process_csv(csv_path, database, column):
         for col in columns:
             data_dict[col] = str(df.loc[i][index])
             index += 1
-        addRow(data_dict, database, column)
+        writeToDB(data_dict, database, column)
         index = 0
 
 
-""" ------------------------------- Read From MONGODB -------------------------------------- """
+""" =================================== Facebook Posts ======================================  """
 
-
-def readtweets():
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["tweets"]
-    mycol = mydb["yair_ntenyaho"]
-
-    myquery = {"date": "2021-04-01"}
-
-    mydoc = mycol.find(myquery)
-
-    for x in mydoc:
-        print(x)
-
-
-def addRow(dict, database, column):
-    # connect to mongoDB(database)
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")  # localhost:27017
-
-    mydb = myclient[database]
-
-    mycolumn = mydb[column]  # add new column "customers" to  "mydatabase" table
-
-    x = mycolumn.insert_one(dict.copy())
-
-
-def addPostsToMongoDB(list, database, column):
-    for element in list:
-        addRow(element, database, column)
+""" -------- download posts from any page -------- """
 
 
 def download_facebook_post(page):
@@ -96,33 +99,32 @@ def download_facebook_post(page):
         row.update({"post": text})
         result.append(row)
     driver.close()
-
-    return result
-
-
-""" ------------------------------- Read From MONGODB -------------------------------------- """
+    insert_posts(result, "posts", page)
 
 
-def readData(database, column, myquery):
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient[database]
-    mycol = mydb[column]
+""" -------- write posts to mongoDB -------- """
 
-    mydoc = mycol.find(myquery)
-    return mydoc
+
+def insert_posts(list, database, column):
+    for element in list:
+        writeToDB(element, database, column)
 
 
 """ ================================--- [ Main ]---================================ """
 # ------posts
 # res = download_facebook_post("ChampionsLeague")
 # addPostsToMongoDB(res,"posts","UEFA")
-# myquery = {"post": {"$regex": "^S"}}
 # mydoc = readData("posts", "UEFA", myquery)
 # for x in mydoc:
 #     print(x)
-
-
-# process_csv("YairNetanyahu.csv")
+# myquery = { "post": { "$gt": "S" } }
+# mydoc = readFromDB("posts" , "ChampionsLeague" ,myquery )
+# print("Docs: " , mydoc)
+# insert_Tweets("YairNetanyahu.csv")
 # readtweets()
+# download_tweets_twint()
+myquery = {"date": "2021-03-31"}
 
-download_tweets_twint()
+mydoc = readFromDB("tweets", "yair_ntenyaho", myquery)
+for doc in mydoc:
+    print(doc)
