@@ -78,7 +78,7 @@ def insert_Tweets(csv_path, database, column):
 
 
 def download_facebook_post(page):
-    driver = webdriver.Chrome(r"C:\Users\Moataz\Desktop\chromedriver_win32 (3)\chromedriver.exe")
+    driver = webdriver.Chrome(r"chromedriver.exe")
     driver.get('https://www.facebook.com/' + page + '/')
     for scroll in range(10):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -109,22 +109,4 @@ def insert_posts(list, database, column):
     for element in list:
         writeToDB(element, database, column)
 
-
-""" ================================--- [ Main ]---================================ """
-# ------posts
-# res = download_facebook_post("ChampionsLeague")
-# addPostsToMongoDB(res,"posts","UEFA")
-# mydoc = readData("posts", "UEFA", myquery)
-# for x in mydoc:
-#     print(x)
-# myquery = { "post": { "$gt": "S" } }
-# mydoc = readFromDB("posts" , "ChampionsLeague" ,myquery )
-# print("Docs: " , mydoc)
-# insert_Tweets("YairNetanyahu.csv")
-# readtweets()
-# download_tweets_twint()
-myquery = {"date": "2021-03-31"}
-
-mydoc = readFromDB("tweets", "yair_ntenyaho", myquery)
-for doc in mydoc:
-    print(doc)
+download_facebook_post("playstation")
